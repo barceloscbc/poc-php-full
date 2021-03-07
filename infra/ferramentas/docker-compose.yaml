@@ -1,0 +1,40 @@
+version: '3.5'
+services:
+  go-server:
+    networks:
+      - service-net
+    image: gocd/gocd-server:v21.1.0
+    ports:
+      - '8153:8153'
+      - '8154:8154'
+    environment:
+      - GO_SERVER_SYSTEM_PROPERTIES='-Dgo.plugin.upload.enabled=true'
+    volumes:
+      - D:\Projetos\fontes\poc-php-full\infra\ferramentas\gocd\godata:/godata
+      - D:\Projetos\fontes\poc-php-full\infra\ferramentas\gocd\home-dir:/home/go
+  go-agent:
+    networks:
+      - service-net
+    image: barceloscbc/gocd-agent-ubuntu-18.04-docker:latest
+    depends_on:
+      - go-server
+      - nexus
+    environment:
+      - GO_SERVER_URL=http://go-server:8153/go
+      - DOCKER_OPTS="--insecure-registry=https://nexus:9083 --insecure-registry=https://nexus:9082"
+    volumes:
+      - D:\Projetos\fontes\poc-php-full\infra\ferramentas\gocdagent\godata:/godata
+      - D:\Projetos\fontes\poc-php-full\infra\ferramentas\gocdagent\home-dir:/home/go
+      - /var/run/docker.sock:/var/run/docker.sock
+  nexus:
+    networks:
+      - service-net
+    image: sonatype/nexus3
+    volumes:
+      - D:\Projetos\fontes\poc-php-full\infra\ferramentas\nexus\data:/nexus-data
+    ports:
+      - 9081:8081
+      - 9082:9082
+      - 9083:9083
+networks:
+    service-net:

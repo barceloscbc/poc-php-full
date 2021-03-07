@@ -21,3 +21,8 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+infra/ferramentas/nexus/data/tmp/
+infra/ferramentas/nexus/data/log/
+infra/ferramentas/gocd/godata/artifacts/pipelines/
+infra/ferramentas/gocd/godata/logs/
+infra/ferramentas/gocdagent/godata/logs/

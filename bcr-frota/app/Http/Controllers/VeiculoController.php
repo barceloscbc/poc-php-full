@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class VeiculoController extends Controller
 {
@@ -32,6 +33,7 @@ class VeiculoController extends Controller
      */
     public function index()
     {
+        Log::channel('logstash')->debug('Logging to logstash');
         //
     }
 

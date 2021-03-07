@@ -35,3 +35,7 @@ php artisan route:list
 |        | GET|HEAD  | docs/swagger              |                  | Closure                                        | web        |
 +--------+-----------+---------------------------+------------------+------------------------------------------------+------------+
 ```
+
+* https://medium.com/@bauernfeind.dominik/using-logstash-with-laravel-509c65065d52
+
+* https://medium.com/@sirajul.anik/elastic-apm-for-php-developers-using-apm-with-laravel-baa2700c4c1b

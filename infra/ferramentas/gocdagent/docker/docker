@@ -1,0 +1,1 @@
+DOCKER_OPTS="--debug --log-level=\"debug\" --dns 172.17.42.1 --insecure-registry 172.16.99.67:5000"

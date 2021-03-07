@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="139">
+  <server agentAutoRegisterKey="f50b798d-7b90-49c6-b165-b647633fe105" webhookSecret="ebc3fc69-7b0f-49d7-b50a-730121e7b546" serverId="e6db5b81-7cb4-4a3c-b3a7-edaee77633c2" tokenGenerationKey="263f1b53-c212-433e-8008-a1d8488d571c">
+    <backup emailOnSuccess="true" emailOnFailure="true" />
+    <artifacts>
+      <artifactsDir>artifacts</artifactsDir>
+    </artifacts>
+  </server>
+  <artifactStores>
+    <artifactStore id="nexus-hub" pluginId="cd.go.artifact.docker.registry">
+      <property>
+        <key>RegistryType</key>
+        <value>other</value>
+      </property>
+      <property>
+        <key>RegistryURL</key>
+        <value>http://nexus:9082/repository/docker-hub/</value>
+      </property>
+      <property>
+        <key>RegistryID</key>
+        <value />
+      </property>
+      <property>
+        <key>AWSAccessKeyId</key>
+        <encryptedValue>AES:yO91HEAzAagSlNDEBSIqVw==:RRxWQjdhlExMAHdppGiE0Q==</encryptedValue>
+      </property>
+      <property>
+        <key>AWSSecretAccessKey</key>
+        <encryptedValue />
+      </property>
+      <property>
+        <key>AWSRegion</key>
+        <value>http://localhost:9081/repository/docker-private/</value>
+      </property>
+      <property>
+        <key>Username</key>
+        <value>admin</value>
+      </property>
+      <property>
+        <key>Password</key>
+        <encryptedValue>AES:OuAubSztIUNK23OoyCoyvw==:vAVA9AGgnFSrlOhH3Tqnlg==</encryptedValue>
+      </property>
+    </artifactStore>
+    <artifactStore id="nexus-private" pluginId="cd.go.artifact.docker.registry">
+      <property>
+        <key>RegistryType</key>
+        <value>other</value>
+      </property>
+      <property>
+        <key>RegistryURL</key>
+        <value>http://nexus:9083</value>
+      </property>
+      <property>
+        <key>RegistryID</key>
+        <value />
+      </property>
+      <property>
+        <key>AWSAccessKeyId</key>
+        <encryptedValue>AES:WUCz4+aRMZUG0F7OZyPRsw==:uILcqiYIu5eoWThKqylFjw==</encryptedValue>
+      </property>
+      <property>
+        <key>AWSSecretAccessKey</key>
+        <value />
+      </property>
+      <property>
+        <key>AWSRegion</key>
+        <value>http://localhost:9081/repository/docker-private/</value>
+      </property>
+      <property>
+        <key>Username</key>
+        <value>admin</value>
+      </property>
+      <property>
+        <key>Password</key>
+        <encryptedValue>AES:PkE8CLDRreCuCYTqjQDCYg==:3SScy3A8aXSZhj2WqOwSEQ==</encryptedValue>
+      </property>
+    </artifactStore>
+  </artifactStores>
+  <pipelines group="defaultGroup" />
+  <pipelines group="microservicos">
+    <pipeline name="build_and_publish_image">
+      <environmentvariables>
+        <variable name="DOCKERHUB_USERNAME">
+          <value>bcr</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="https://github.com/barceloscbc/poc-container.git" encryptedPassword="AES:1XAGyMbnS8afSkwmu+PwSg==:QsCbOwPaejUYVjqDR+qTIQ==" />
+      </materials>
+      <stage name="build_and_publish_image">
+        <jobs>
+          <job name="build_image">
+            <tasks>
+              <exec command="/bin/bash" workingdir="./">
+                <arg>-c</arg>
+                <arg>docker build -t $DOCKERHUB_USERNAME/api-frota:$GO_PIPELINE_LABEL . -f Dockerfile</arg>
+                <runif status="passed" />
+              </exec>
+              <task>
+                <pluginConfiguration id="docker.pipeline.plugin" version="1.0" />
+                <configuration>
+                  <property>
+                    <key>ImageName</key>
+                    <value>api-frota</value>
+                  </property>
+                  <property>
+                    <key>DockerFileName</key>
+                    <value>./Dockerfile</value>
+                  </property>
+                  <property>
+                    <key>RegistryUsername</key>
+                    <value>admin</value>
+                  </property>
+                  <property>
+                    <key>Username</key>
+                    <value>bcr</value>
+                  </property>
+                  <property>
+                    <key>RegistryURLForLogin</key>
+                    <value>http://nexus:9083</value>
+                  </property>
+                  <property>
+                    <key>ImageTag1</key>
+                    <value>lts</value>
+                  </property>
+                  <property>
+                    <key>RegistryEmail</key>
+                    <value />
+                  </property>
+                  <property>
+                    <key>IsDockerClean</key>
+                    <value />
+                  </property>
+                  <property>
+                    <key>ImageTag2</key>
+                    <value />
+                  </property>
+                  <property>
+                    <key>RegistryPassword</key>
+                    <value>admin</value>
+                  </property>
+                  <property>
+                    <key>ImageTag3</key>
+                    <value />
+                  </property>
+                </configuration>
+                <runif status="passed" />
+              </task>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+</cruise>
